@@ -5,13 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,12 +40,23 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PictureDetails(title: String, explanation: String) {
-    Column(modifier = Modifier.padding(all = 16.dp)) {
+    Box {
         NasaImage()
-        Spacer(modifier = Modifier.height(16.dp))
-        Title(title = title)
-        Spacer(modifier = Modifier.height(16.dp))
-        Explanation(explanation = explanation)
+        Surface(
+            color = Color.White,
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(top = (280 - 16).dp), //todo remove magic numbers and hardcode
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            elevation = 4.dp
+        ) {
+            Column(modifier = Modifier.padding(all = 16.dp)) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Title(title = title)
+                Spacer(modifier = Modifier.height(16.dp))
+                Explanation(explanation = explanation)
+            }
+        }
     }
 }
 
@@ -49,7 +64,11 @@ fun PictureDetails(title: String, explanation: String) {
 fun NasaImage() {
     Image(
         painter = painterResource(id = R.drawable.apod_mock_picture),
-        contentDescription = null
+        contentScale = ContentScale.Crop,
+        contentDescription = null,
+        modifier = Modifier
+            .height(280.dp)
+            .fillMaxWidth()
     )
 }
 
