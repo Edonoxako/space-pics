@@ -3,38 +3,75 @@ package com.edonoxako.spacepics
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.edonoxako.spacepics.picturedetails.PictureDetailsState
+import com.edonoxako.spacepics.picturedetails.PictureDetailsViewModel
 import com.edonoxako.spacepics.ui.theme.SpacePicsTheme
+import com.edonoxako.spacepics.ui.theme.spacePicsTypography
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: PictureDetailsViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SpacePicsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    PictureDetails(
-                        title = MOCK_TITLE,
-                        explanation = MOCK_EXPLANATION
-                    )
+                    val state = viewModel.pictureDetailsState.observeAsState()
+                    when(val pictureDetailsState = state.value) {
+                        is PictureDetailsState.Loaded -> PictureDetails(
+                            title = pictureDetailsState.pictureDetails.pictureTitle,
+                            explanation = pictureDetailsState.pictureDetails.pictureExplanation
+                        )
+                        is PictureDetailsState.InProgress -> ProgressSpinner()
+                        is PictureDetailsState.Error -> Error(errorReson = pictureDetailsState.errorReason)
+                        is PictureDetailsState.Undefined -> Error(errorReson = "Nothing to show")
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ProgressSpinner() {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth().fillMaxHeight()
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun Error(errorReson: String) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth().fillMaxHeight()
+    ) {
+        Text(text = errorReson)
     }
 }
 
@@ -63,7 +100,7 @@ fun PictureDetails(title: String, explanation: String) {
 @Composable
 fun NasaImage() {
     Image(
-        painter = painterResource(id = R.drawable.apod_mock_picture),
+        painter = ColorPainter(Color.Blue),
         contentScale = ContentScale.Crop,
         contentDescription = null,
         modifier = Modifier
@@ -76,7 +113,7 @@ fun NasaImage() {
 fun Title(title: String) {
     Text(
         text = title,
-        style = typography.h5,
+        style = spacePicsTypography.h5,
     )
 }
 
@@ -84,7 +121,7 @@ fun Title(title: String) {
 fun Explanation(explanation: String) {
     Text(
         text = explanation,
-        style = typography.body1
+        style = spacePicsTypography.body1
     )
 }
 

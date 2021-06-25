@@ -37,7 +37,7 @@ fun SpacePicsTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
 
     MaterialTheme(
             colors = colors,
-            typography = Typography,
+            typography = spacePicsTypography,
             shapes = Shapes,
             content = content
     )
