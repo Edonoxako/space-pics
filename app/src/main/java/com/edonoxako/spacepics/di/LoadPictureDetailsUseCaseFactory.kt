@@ -1,9 +1,7 @@
 package com.edonoxako.spacepics.di
 
-import com.edonoxako.spacepics.picturedetails.LoadPictureDetailsUseCase
-import com.edonoxako.spacepics.picturedetails.MockPictureDetailsRepository
-import com.edonoxako.spacepics.picturedetails.PictureDetailsMapper
-import com.edonoxako.spacepics.picturedetails.RemotePictureDetailsRepositoryImpl
+import com.edonoxako.spacepics.data.storage.PictureDetailsCache
+import com.edonoxako.spacepics.picturedetails.*
 
 class LoadPictureDetailsUseCaseFactory {
 
@@ -22,6 +20,10 @@ class LoadPictureDetailsUseCaseFactory {
     }
 
     fun getLoadPictureDetailsUseCase(): LoadPictureDetailsUseCase {
-        return LoadPictureDetailsUseCase(productionRepository)
+        return LoadPictureDetailsUseCase(
+            remotePictureDetailsRepository = productionRepository,
+            pictureDetailsCache = PictureDetailsCache(),
+            dateProvider = DateProvider()
+        )
     }
 }
