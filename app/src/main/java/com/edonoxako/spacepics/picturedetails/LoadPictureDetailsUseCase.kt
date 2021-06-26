@@ -1,10 +1,10 @@
 package com.edonoxako.spacepics.picturedetails
 
 class LoadPictureDetailsUseCase(
-    private val pictureDetailsRepository: PictureDetailsRepository
+    private val remotePictureDetailsRepository: RemotePictureDetailsRepository
 ) {
 
     suspend fun execute(): PictureDetails {
-        return pictureDetailsRepository.getPictureDetails()
+        return remotePictureDetailsRepository.getPictureDetails()
     }
 }

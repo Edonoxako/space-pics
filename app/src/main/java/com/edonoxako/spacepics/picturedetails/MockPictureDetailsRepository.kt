@@ -4,9 +4,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
-class PictureDetailsRepository {
+class MockPictureDetailsRepository : RemotePictureDetailsRepository {
 
-    suspend fun getPictureDetails(): PictureDetails {
+    override suspend fun getPictureDetails(): PictureDetails {
         return withContext(Dispatchers.IO) {
             delay(5000L)
             MOCK_PICTURE_DETAILS
@@ -17,7 +17,8 @@ class PictureDetailsRepository {
 
         private const val MOCK_TITLE = "A Supercell Thunderstorm Over Texas"
 
-        private val MOCK_EXPLANATION = """Is that a cloud or an alien spaceship?  It's an unusual and 
+        private val MOCK_EXPLANATION =
+            """Is that a cloud or an alien spaceship?  It's an unusual and 
     sometimes dangerous type of
     thunderstorm cloud called a supercell. Supercells may spawn damaging tornados, hail, downbursts 
     of air, or drenching rain.  Or they may just look impressive. A supercell harbors a mesocyclone
