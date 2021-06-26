@@ -7,15 +7,21 @@ import com.edonoxako.spacepics.picturedetails.RemotePictureDetailsRepositoryImpl
 
 class LoadPictureDetailsUseCaseFactory {
 
-    fun getLoadPictureDetailsUseCase(): LoadPictureDetailsUseCase {
+    private val productionRepository by lazy {
         val nasaApi = NasaApiFactory().getNasaApi()
         val pictureDetailsMapper = PictureDetailsMapper()
 
-        val pictureDetailsRepository = RemotePictureDetailsRepositoryImpl(
+        RemotePictureDetailsRepositoryImpl(
             nasaApi = nasaApi,
             pictureDetailsMapper = pictureDetailsMapper
         )
+    }
 
-        return LoadPictureDetailsUseCase(pictureDetailsRepository)
+    private val mockRepository by lazy {
+        MockPictureDetailsRepository()
+    }
+
+    fun getLoadPictureDetailsUseCase(): LoadPictureDetailsUseCase {
+        return LoadPictureDetailsUseCase(productionRepository)
     }
 }

@@ -1,7 +1,6 @@
 package com.edonoxako.spacepics.data.network
 
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 class NasaRetrofitProvider(
     private val moshiConverterProvider: MoshiConverterProvider

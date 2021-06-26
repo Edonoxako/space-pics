@@ -18,7 +18,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +25,7 @@ import com.edonoxako.spacepics.picturedetails.PictureDetailsState
 import com.edonoxako.spacepics.picturedetails.PictureDetailsViewModel
 import com.edonoxako.spacepics.ui.theme.SpacePicsTheme
 import com.edonoxako.spacepics.ui.theme.spacePicsTypography
+import com.google.accompanist.coil.rememberCoilPainter
 
 class MainActivity : ComponentActivity() {
 
@@ -38,10 +38,11 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     val state = viewModel.pictureDetailsState.observeAsState()
-                    when(val pictureDetailsState = state.value) {
+                    when (val pictureDetailsState = state.value) {
                         is PictureDetailsState.Loaded -> PictureDetails(
                             title = pictureDetailsState.pictureDetails.pictureTitle,
-                            explanation = pictureDetailsState.pictureDetails.pictureExplanation
+                            explanation = pictureDetailsState.pictureDetails.pictureExplanation,
+                            imageUrl = pictureDetailsState.pictureDetails.pictureUrl
                         )
                         is PictureDetailsState.InProgress -> ProgressSpinner()
                         is PictureDetailsState.Error -> Error(errorReson = pictureDetailsState.errorReason)
@@ -58,7 +59,9 @@ fun ProgressSpinner() {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().fillMaxHeight()
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
     ) {
         CircularProgressIndicator()
     }
@@ -69,16 +72,18 @@ fun Error(errorReson: String) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().fillMaxHeight()
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
     ) {
         Text(text = errorReson)
     }
 }
 
 @Composable
-fun PictureDetails(title: String, explanation: String) {
+fun PictureDetails(title: String, explanation: String, imageUrl: String) {
     Box {
-        NasaImage()
+        NasaImage(imageUrl)
         Surface(
             color = Color.White,
             modifier = Modifier
@@ -98,9 +103,12 @@ fun PictureDetails(title: String, explanation: String) {
 }
 
 @Composable
-fun NasaImage() {
+fun NasaImage(imageUrl: String) {
     Image(
-        painter = ColorPainter(Color.Blue),
+        painter = rememberCoilPainter(
+            request = imageUrl,
+            fadeIn = true
+        ),
         contentScale = ContentScale.Crop,
         contentDescription = null,
         modifier = Modifier
@@ -128,12 +136,12 @@ fun Explanation(explanation: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    SpacePicsTheme {
-        PictureDetails(
-            title = MOCK_TITLE,
-            explanation = MOCK_EXPLANATION
-        )
-    }
+//    SpacePicsTheme {
+//        PictureDetails(
+//            title = MOCK_TITLE,
+//            explanation = MOCK_EXPLANATION
+//        )
+//    }
 }
 
 private const val MOCK_TITLE = "A Supercell Thunderstorm Over Texas"
