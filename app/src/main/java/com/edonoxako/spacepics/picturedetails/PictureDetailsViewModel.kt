@@ -1,18 +1,16 @@
 package com.edonoxako.spacepics.picturedetails
 
+import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.edonoxako.spacepics.di.LoadPictureDetailsUseCaseFactory
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class PictureDetailsViewModel : ViewModel() {
+class PictureDetailsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val loadPictureDetailsUseCase by lazy {
-        LoadPictureDetailsUseCaseFactory().getLoadPictureDetailsUseCase()
+        LoadPictureDetailsUseCaseFactory(getApplication()).getLoadPictureDetailsUseCase()
     }
 
     private val _pictureDetailsState = MutableLiveData<PictureDetailsState>(

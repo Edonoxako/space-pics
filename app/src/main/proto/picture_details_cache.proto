@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_package = "com.edonoxako.spacepics";
+option java_multiple_files = true;
+
+message PictureDetailsProto {
+    string pictureTitle = 1;
+    string pictureExplanation = 2;
+    string pictureUrl = 3;
+}
+
+message PictureDetailsCacheProto {
+    map<string, PictureDetailsProto> cache = 4;
+}

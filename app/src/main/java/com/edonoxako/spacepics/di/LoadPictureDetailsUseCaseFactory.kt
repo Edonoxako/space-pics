@@ -1,9 +1,21 @@
 package com.edonoxako.spacepics.di
 
+import android.content.Context
 import com.edonoxako.spacepics.data.storage.PictureDetailsCache
 import com.edonoxako.spacepics.picturedetails.*
 
-class LoadPictureDetailsUseCaseFactory {
+//todo replace this with normal DI
+class LoadPictureDetailsUseCaseFactory(
+    context: Context
+) {
+
+    private val pictureDetailsCache by lazy {
+        val pictureDetailsMapper = PictureDetailsMapper()
+        PictureDetailsCache(
+            context = context,
+            pictureDetailsMapper = pictureDetailsMapper
+        )
+    }
 
     private val productionRepository by lazy {
         val nasaApi = NasaApiFactory().getNasaApi()
@@ -22,7 +34,7 @@ class LoadPictureDetailsUseCaseFactory {
     fun getLoadPictureDetailsUseCase(): LoadPictureDetailsUseCase {
         return LoadPictureDetailsUseCase(
             remotePictureDetailsRepository = productionRepository,
-            pictureDetailsCache = PictureDetailsCache(),
+            pictureDetailsCache = pictureDetailsCache,
             dateProvider = DateProvider()
         )
     }
